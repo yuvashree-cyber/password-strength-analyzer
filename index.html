@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PassGuard — Password Strength Analyzer</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+  <div class="bg-blob blob3"></div>
+
+  <div class="page-wrap">
+
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="logo">
+        <div class="logo-shield">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+            <path d="M12 2L3 6v6c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V6L12 2z" fill="currentColor" opacity=".2" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="logo-text-wrap">
+          <span class="logo-name">PassGuard</span>
+          <span class="logo-tag">Password Security Analyzer</span>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        100% Client-Side
+      </div>
+    </header>
+
+    <main class="main-grid">
+
+      <!-- LEFT: Input & Checklist -->
+      <section class="card card-left">
+
+        <div class="card-section-title">Analyze Password</div>
+
+        <!-- Input -->
+        <div class="field-group">
+          <label class="field-label" for="password">Enter Password</label>
+          <div class="input-box" id="inputBox">
+            <svg class="input-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            <input type="password" id="password" class="pw-input"
+              placeholder="Type your password here…"
+              autocomplete="off" spellcheck="false"/>
+            <button class="eye-btn" id="eyeBtn" aria-label="Toggle visibility">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="char-hint"><span id="charCount">0</span> characters entered</div>
+        </div>
+
+        <!-- Strength meter -->
+        <div class="strength-block">
+          <div class="strength-row">
+            <span class="strength-label">Strength</span>
+            <span class="strength-pill" id="strengthPill">Not Analyzed</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="barFill"></div>
+          </div>
+          <div class="bar-labels">
+            <span>Weak</span><span>Fair</span><span>Good</span><span>Strong</span>
+          </div>
+        </div>
+
+        <!-- Complexity checklist -->
+        <div class="checklist-title">Complexity Requirements</div>
+        <div class="checklist">
+          <div class="chk-row" id="chkLen">
+            <div class="chk-ico" id="chkLenIco"></div>
+            <span>At least 8 characters</span>
+          </div>
+          <div class="chk-row" id="chkUp">
+            <div class="chk-ico" id="chkUpIco"></div>
+            <span>Uppercase letter (A–Z)</span>
+          </div>
+          <div class="chk-row" id="chkLo">
+            <div class="chk-ico" id="chkLoIco"></div>
+            <span>Lowercase letter (a–z)</span>
+          </div>
+          <div class="chk-row" id="chkNum">
+            <div class="chk-ico" id="chkNumIco"></div>
+            <span>Number (0–9)</span>
+          </div>
+          <div class="chk-row" id="chkSym">
+            <div class="chk-ico" id="chkSymIco"></div>
+            <span>Special character (!@#$%…)</span>
+          </div>
+          <div class="chk-row" id="chkUniq">
+            <div class="chk-ico" id="chkUniqIco"></div>
+            <span>Not a commonly used password</span>
+          </div>
+        </div>
+
+        <!-- Generate suggestion -->
+        <button class="btn-primary" id="btnGenerate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1H9a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/>
+            <line x1="9" y1="21" x2="15" y2="21"/><line x1="9" y1="18" x2="15" y2="18"/>
+          </svg>
+          Suggest Strong Password
+        </button>
+
+        <div class="generated-wrap" id="generatedWrap" style="display:none">
+          <label class="field-label">Suggested Password</label>
+          <div class="generated-row">
+            <code class="gen-text" id="genText"></code>
+            <button class="copy-btn" id="copyBtn" title="Copy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              </svg>
+              <span id="copyLabel">Copy</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT: Stats + Recommendations + History -->
+      <div class="right-col">
+
+        <!-- Stats row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon si-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="stat-val" id="statEntropy">0 <small>bits</small></div>
+              <div class="stat-lbl">Entropy</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-teal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div>
+              <div class="stat-val" id="statCrack">—</div>
+              <div class="stat-lbl">Est. Crack Time</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-violet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="stat-val" id="statPool">0</div>
+              <div class="stat-lbl">Char Pool</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card card-rec">
+          <div class="card-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            Recommendations
+          </div>
+          <ul class="rec-list" id="recList">
+            <li class="rec-idle">Start typing to see recommendations…</li>
+          </ul>
+        </div>
+
+        <!-- History -->
+        <div class="card card-hist">
+          <div class="hist-header">
+            <div class="card-section-title" style="margin-bottom:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Password History
+            </div>
+            <button class="clear-btn" id="clearBtn">Clear All</button>
+          </div>
+
+          <div class="reuse-banner" id="reuseBanner" style="display:none">
+            ⚠️ This password has been used before — please choose a different one.
+          </div>
+
+          <ul class="hist-list" id="histList">
+            <li class="hist-empty">No history yet. Saved passwords will appear here.</li>
+          </ul>
+
+          <button class="btn-secondary" id="saveBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Save to History
+          </button>
+        </div>
+
+      </div><!-- /right-col -->
+
+    </main>
+
+    <footer class="site-footer">
+      PassGuard &copy; 2025 &nbsp;·&nbsp; Internship Project &nbsp;·&nbsp; All analysis is 100% local — no data is ever transmitted
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
